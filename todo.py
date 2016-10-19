@@ -13,7 +13,7 @@ def todo_list():
 
     conn = sqlite3.connect(DB_FILE)
     c = conn.cursor()
-    c.execute("SELECT id, task FROM todo WHERE status LIKE '1'")
+    c.execute("SELECT id, task,status FROM todo ")
     result = c.fetchall()
     c.close()
 
@@ -58,16 +58,19 @@ def edit_item(no):
 
         conn = sqlite3.connect(DB_FILE)
         c = conn.cursor()
-        c.execute("UPDATE todo SET task = ?, status = ? WHERE id LIKE ?", (edit, status, no))
+        c.execute("UPDATE todo SET task = ?, status = ? WHERE id=?", (edit, status, no))
         conn.commit()
 
-        return '<p>The item number %s was successfully updated</p>' % no
+        redirect("/todo")
+        
     else:
+        
+        
         conn = sqlite3.connect(DB_FILE)
         c = conn.cursor()
-        c.execute("SELECT task FROM todo WHERE id LIKE ?", (str(no)))
+        c.execute("SELECT task FROM todo WHERE id=?", (str(no),))
         cur_data = c.fetchone()
-
+        
         return template('edit_task', old=cur_data, no=no)
 
 
